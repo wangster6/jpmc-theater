@@ -55,7 +55,7 @@ public class TheaterTests {
 		assertEquals(4, newReservation.getAudienceCount());
 		
 		Exception e = assertThrows(IllegalArgumentException.class, () -> theater.reserve(john, 20, 1));
-		assertEquals("The sequence you selected is out of bounds: " + String.valueOf(20) + ". Please select a valid sequence from the schedule.", e.getMessage());
+		assertEquals("Invalid sequence. There are no showings with the sequence: " + String.valueOf(20), e.getMessage());
 	}
 
     @Test

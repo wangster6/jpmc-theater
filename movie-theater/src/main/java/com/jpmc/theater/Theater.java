@@ -34,15 +34,17 @@ public class Theater {
 
     public Reservation reserve(Customer customer, int sequence, int howManyTickets) {
         Showing showing = null;
-        try {
-            showing = schedule.get(sequence - 1);
-        } catch (IndexOutOfBoundsException ex) {
-            throw new IllegalArgumentException("The sequence you selected is out of bounds: " + sequence + ". Please select a valid sequence from the schedule.");
-        } catch (Exception other) {
-        	other.printStackTrace();
-        	throw new IllegalArgumentException();
-        }
+
+    	for(int i = 0; i < schedule.size(); i++) {
+    		if(schedule.get(i).isSequence(sequence)) {
+    			showing = schedule.get(i);
+    		}
+    	}
         
+    	if(showing == null) {
+    		throw new IllegalArgumentException("Invalid sequence. There are no showings with the sequence: " + String.valueOf(sequence));
+    	}
+    	
         Reservation toAdd = new Reservation(customer, showing, howManyTickets);
         reservations.add(toAdd);
         return toAdd;
@@ -52,7 +54,7 @@ public class Theater {
         System.out.println("Showtimes for " + provider.currentDate());
         System.out.println("===================================================");
         schedule.forEach(s ->
-                System.out.println(s.getSequenceOfTheDay() + ": " + s.formatStartTime(s.getStartTime()) + " " + s.getMovie().getTitle() + " " + humanReadableFormat(s.getMovie().getRunningTime()) + " $" + s.getMovieFee())
+                System.out.println(s.getSequenceOfTheDay() + ": " + s.formatStartTime(s.getStartTime()) + " " + s.getMovie().getTitle() + " " + humanReadableFormat(s.getMovie().getRunningTime()) + " $" + s.getMovie().getTicketPrice())
         );
         System.out.println("===================================================");
     }
