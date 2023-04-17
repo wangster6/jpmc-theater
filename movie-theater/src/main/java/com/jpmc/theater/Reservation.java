@@ -33,4 +33,12 @@ public class Reservation {
     public double totalFee() {
         return showing.getMovie().calculateTicketPrice(showing) * this.audienceCount;
     }
+    
+    /**
+     * Returns the customer who made the reservation
+     * @return the customer
+     */
+    public Customer getCustomer() {
+    	return this.customer;
+    }
 }

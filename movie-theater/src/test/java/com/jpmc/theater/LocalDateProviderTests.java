@@ -9,13 +9,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class LocalDateProviderTests {
+	/** The local date provider used for testing */
 	LocalDateProvider provider;
 	
+	/**
+	 * Initializes provider to singleton instance of LocalDateProvider from the getInstance method before each test.
+	 */
 	@BeforeEach
 	public void setUp() {
 		provider = LocalDateProvider.getInstance();
 	}
 	
+	/**
+	 * Testing the getInstance method of the LocalDateProvider
+	 */
 	@Test
 	public void testGetInstance() {
 		// Test to make sure getInstance method does not throw any exceptions.
@@ -34,8 +41,11 @@ public class LocalDateProviderTests {
 		// times and asserting that they are equal and not null.
 	}
 	
+	/**
+	 * Testing the currentDate method of the LocalDateProvider.
+	 */
     @Test
-    void makeSureCurrentTime() {
+    void testCurrentDate() {
     	// Test to make sure the currentDate method does not throw any exceptions.
     	assertDoesNotThrow(() -> provider.currentDate());
     	
@@ -47,6 +57,9 @@ public class LocalDateProviderTests {
     	assertEquals(LocalDate.now(), date);
     }
     
+    /**
+     * Extra tests for the LocalDateProvider.
+     */
     @Test
     public void testExtras() {
     	// Extra test to check if returned value of directly accessing LocalDateProvider's singleton instance and calling
