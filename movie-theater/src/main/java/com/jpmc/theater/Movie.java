@@ -1,6 +1,7 @@
 package com.jpmc.theater;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -24,25 +25,37 @@ public class Movie {
     private int specialCode;
 
     /**
-     * Constructs the Movie object with the provided parameters
+     * Constructs the Movie object with the provided parameters.
+     * @param title of the movie
+     * @param runningTime of the movie
+     * @param ticketPrice of the movie
+     * @param specialCode to check for discounts
+     */
+    public Movie(String title, Duration runningTime, double ticketPrice, int specialCode, String description) {
+        this.title = title;
+        this.runningTime = runningTime;
+        this.ticketPrice = ticketPrice;
+        this.specialCode = specialCode;
+        this.description = description;
+    }
+    
+    /**
+     * Constructs the Movie object with the provided parameters. If no description is specified for the movie, set it to empty string.
      * @param title of the movie
      * @param runningTime of the movie
      * @param ticketPrice of the movie
      * @param specialCode to check for discounts
      */
     public Movie(String title, Duration runningTime, double ticketPrice, int specialCode) {
-        this.title = title;
-        this.runningTime = runningTime;
-        this.ticketPrice = ticketPrice;
-        this.specialCode = specialCode;
+        this(title, runningTime, ticketPrice, specialCode, "");
     }
-    
+
     /**
      * Returns the title of the movie
      * @return the title of the movie
      */
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     /**
@@ -50,7 +63,7 @@ public class Movie {
      * @return the running time of the movie
      */
     public Duration getRunningTime() {
-        return runningTime;
+        return this.runningTime;
     }
 
     /**
@@ -58,7 +71,15 @@ public class Movie {
      * @return the ticket price of the movie
      */
     public double getTicketPrice() {
-        return ticketPrice;
+        return this.ticketPrice;
+    }
+    
+    /**
+     * Returns the description of the movie
+     * @return the description of the movie
+     */
+    public String getDescription() {
+        return this.description;
     }
 
     /**
@@ -67,7 +88,7 @@ public class Movie {
      * @return Final ticket price after discount.
      */
     public double calculateTicketPrice(Showing showing) {
-        return ticketPrice - getDiscount(showing.getSequenceOfTheDay());
+        return ticketPrice - getDiscount(showing);
     }
 
     /**
@@ -75,24 +96,39 @@ public class Movie {
      * @param showSequence displays number of times the movie has been shown for the day
      * @return the total discount for the showing in dollar value
      */
-    private double getDiscount(int showSequence) {
-        double specialDiscount = 0;
+    private double getDiscount(Showing showing) {
+    	double largestDiscount = 0;
         if (MOVIE_CODE_SPECIAL == specialCode) {
-            specialDiscount = ticketPrice * 0.2;  // 20% discount for special movie
+            largestDiscount = ticketPrice * 0.2;  // 20% discount for special movie
         }
-
-        double sequenceDiscount = 0;
+        
+        int showSequence = showing.getSequenceOfTheDay();
         if (showSequence == 1) {
-            sequenceDiscount = 3; // $3 discount for 1st show
+        	if(3 > largestDiscount) {
+        		largestDiscount = 3; // 3 dollar discount for first showing of the day
+        	}
         } else if (showSequence == 2) {
-            sequenceDiscount = 2; // $2 discount for 2nd show
+        	if(2 > largestDiscount) {
+        		largestDiscount = 2; // 2 dollar discount for second showing of the day
+        	}
         }
-//        else {
-//            throw new IllegalArgumentException("failed exception");
-//        }
 
-        // biggest discount wins
-        return specialDiscount > sequenceDiscount ? specialDiscount : sequenceDiscount;
+        LocalTime timeDiscountStart = LocalTime.of(11, 0);
+        LocalTime timeDiscountEnd = LocalTime.of(16, 0);
+        LocalTime showingTime = showing.getStartTime().toLocalTime();
+        if(showingTime.isAfter(timeDiscountStart) && showingTime.isBefore(timeDiscountEnd)) {
+        	if(ticketPrice * 0.25 > largestDiscount) {
+        		largestDiscount = ticketPrice * 0.25;
+        	}
+        }
+        
+        if(showing.getStartTime().getDayOfMonth() == 7) {
+        	if(1 > largestDiscount) {
+        		largestDiscount = 1;
+        	}
+        }
+        
+        return largestDiscount;
     }
 
     @Override
