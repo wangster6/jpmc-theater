@@ -49,4 +49,20 @@ public class ReservationTests {
     public void testGetCustomer() {
     	assertEquals(customer, reservation.getCustomer());
     }
+    
+    /**
+     * Testing the getShowing method in Reservation.
+     */
+    @Test
+    public void testGetShowing() {
+    	assertEquals(showing, reservation.getShowing());
+    }
+    
+    /**
+     * Testing the getAudienceCount method in Reservation.
+     */
+    @Test
+    public void testGetAudienceCount() {
+    	assertEquals(4, reservation.getAudienceCount());
+    }
 }

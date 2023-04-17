@@ -2,55 +2,62 @@ package com.jpmc.theater;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Theater {
-
     LocalDateProvider provider;
     private List<Showing> schedule;
+    private List<Reservation> reservations;
 
-    public Theater(LocalDateProvider provider) {
-        this.provider = provider;
-
-        Movie spiderMan = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90), 12.5, 1);
-        Movie turningRed = new Movie("Turning Red", Duration.ofMinutes(85), 11, 0);
-        Movie theBatMan = new Movie("The Batman", Duration.ofMinutes(95), 9, 0);
-        schedule = List.of(
-            new Showing(turningRed, 1, LocalDateTime.of(provider.currentDate(), LocalTime.of(9, 0))),
-            new Showing(spiderMan, 2, LocalDateTime.of(provider.currentDate(), LocalTime.of(11, 0))),
-            new Showing(theBatMan, 3, LocalDateTime.of(provider.currentDate(), LocalTime.of(12, 50))),
-            new Showing(turningRed, 4, LocalDateTime.of(provider.currentDate(), LocalTime.of(14, 30))),
-            new Showing(spiderMan, 5, LocalDateTime.of(provider.currentDate(), LocalTime.of(16, 10))),
-            new Showing(theBatMan, 6, LocalDateTime.of(provider.currentDate(), LocalTime.of(17, 50))),
-            new Showing(turningRed, 7, LocalDateTime.of(provider.currentDate(), LocalTime.of(19, 30))),
-            new Showing(spiderMan, 8, LocalDateTime.of(provider.currentDate(), LocalTime.of(21, 10))),
-            new Showing(theBatMan, 9, LocalDateTime.of(provider.currentDate(), LocalTime.of(23, 0)))
-        );
+    public Theater() {
+        this.provider = LocalDateProvider.getInstance();
+        this.schedule = new ArrayList<Showing>();
+        this.reservations = new ArrayList<Reservation>();
+    }
+    
+    private Showing createShowing(Movie movie, int sequenceOfTheDay, LocalDateTime showStartTime) {
+    	return new Showing(movie, sequenceOfTheDay, showStartTime);
+    }
+    
+    public Showing addShowingToSchedule(Movie movie, int sequenceOfTheDay, LocalDateTime showStartTime) {
+    	Showing toAdd = createShowing(movie, sequenceOfTheDay, showStartTime);
+    	schedule.add(toAdd);
+    	return toAdd;
+    }
+    
+    public Showing addShowingToSchedule(Showing showing) {
+    	schedule.add(showing);
+    	return showing;
     }
 
     public Reservation reserve(Customer customer, int sequence, int howManyTickets) {
-        Showing showing;
+        Showing showing = null;
         try {
             showing = schedule.get(sequence - 1);
-        } catch (RuntimeException ex) {
-            ex.printStackTrace();
-            throw new IllegalStateException("not able to find any showing for given sequence " + sequence);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("The sequence you selected is out of bounds: " + sequence + ". Please select a valid sequence from the schedule.");
+        } catch (Exception other) {
+        	other.printStackTrace();
+        	throw new IllegalArgumentException();
         }
-        return new Reservation(customer, showing, howManyTickets);
+        
+        Reservation toAdd = new Reservation(customer, showing, howManyTickets);
+        reservations.add(toAdd);
+        return toAdd;
     }
 
     public void printSchedule() {
-        System.out.println(provider.currentDate());
+        System.out.println("Showtimes for " + provider.currentDate());
         System.out.println("===================================================");
         schedule.forEach(s ->
-                System.out.println(s.getSequenceOfTheDay() + ": " + s.getStartTime() + " " + s.getMovie().getTitle() + " " + humanReadableFormat(s.getMovie().getRunningTime()) + " $" + s.getMovieFee())
+                System.out.println(s.getSequenceOfTheDay() + ": " + s.formatStartTime(s.getStartTime()) + " " + s.getMovie().getTitle() + " " + humanReadableFormat(s.getMovie().getRunningTime()) + " $" + s.getMovieFee())
         );
         System.out.println("===================================================");
     }
 
-    public String humanReadableFormat(Duration duration) {
+    private String humanReadableFormat(Duration duration) {
         long hour = duration.toHours();
         long remainingMin = duration.toMinutes() - TimeUnit.HOURS.toMinutes(duration.toHours());
 
@@ -65,10 +72,5 @@ public class Theater {
         else {
             return "s";
         }
-    }
-
-    public static void main(String[] args) {
-        Theater theater = new Theater(LocalDateProvider.getInstance());
-        theater.printSchedule();
     }
 }

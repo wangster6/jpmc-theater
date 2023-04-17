@@ -41,4 +41,22 @@ public class Reservation {
     public Customer getCustomer() {
     	return this.customer;
     }
+
+	/**
+	 * Return the showing of the reservation
+	 * @return the showing
+	 */
+	public Showing getShowing() {
+		return showing;
+	}
+
+	/**
+	 * Return the audience count of the reservation
+	 * @return the audienceCount
+	 */
+	public int getAudienceCount() {
+		return audienceCount;
+	}
+    
+    
 }
