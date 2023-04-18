@@ -21,8 +21,7 @@ This project was a coding exercise for my job application and required me to uti
   * If a movie showing qualifies for multiple discounts, the largest one will be applied.
 * System can also display the movie schedule of the current day in a json format.
 
-## Additional Features Added
+## Additional Features Added/Changes Made
 * A daily schedule is added so that theater managers can add and remove movie showings in a simpler and more efficient way.
 * A reservation list is added so that theater managers can keep track of all reservations.
 * The movie schedule display is re-formatted and aligned to improve organization.
-* JUnit test cases and documentation added for each class to improve code coverage.
