@@ -83,6 +83,52 @@ public class Movie {
     }
 
     /**
+	 * Returns the total discount for the showing in dollar value.
+	 * @param showSequence displays number of times the movie has been shown for the day
+	 * @return the total discount for the showing in dollar value
+	 */
+	private double getDiscount(Showing showing) {
+		// Used to keep track of largest discount. Starts at 0 and if each discount is greater, then set this value to that larger discount.
+		double largestDiscount = 0; 
+		
+		// Checking for special movie discount
+	    if (MOVIE_CODE_SPECIAL == specialCode) {
+	        largestDiscount = ticketPrice * 0.2;  // 20% discount for special movie
+	    }
+	    
+	    // Checking for sequence discount
+	    int showSequence = showing.getSequenceOfTheDay();
+	    if (showSequence == 1) {
+	    	if(3 > largestDiscount) {
+	    		largestDiscount = 3; // 3 dollar discount for first showing of the day
+	    	}
+	    } else if (showSequence == 2) {
+	    	if(2 > largestDiscount) {
+	    		largestDiscount = 2; // 2 dollar discount for second showing of the day
+	    	}
+	    }
+	
+	    // Checking for time discount
+	    LocalTime timeDiscountStart = LocalTime.of(11, 0);
+	    LocalTime timeDiscountEnd = LocalTime.of(16, 0);
+	    LocalTime showingTime = showing.getStartTime().toLocalTime();
+	    if(showingTime.isAfter(timeDiscountStart) && showingTime.isBefore(timeDiscountEnd)) {
+	    	if(ticketPrice * 0.25 > largestDiscount) {
+	    		largestDiscount = ticketPrice * 0.25;
+	    	}
+	    }
+	    
+	    // Checking for 7th day discount
+	    if(showing.getStartTime().getDayOfMonth() == 7) {
+	    	if(1 > largestDiscount) {
+	    		largestDiscount = 1;
+	    	}
+	    }
+	    
+	    return largestDiscount;
+	}
+
+	/**
      * Calculates the ticket price of the movie after applying the discount.
      * @param showing the movie showing of the day. Used to calculate sequence of the day.
      * @return Final ticket price after discount.
@@ -92,45 +138,8 @@ public class Movie {
     }
 
     /**
-     * Returns the total discount for the showing in dollar value.
-     * @param showSequence displays number of times the movie has been shown for the day
-     * @return the total discount for the showing in dollar value
+     * Checks if movie objects are equal by comparing their variable values.
      */
-    private double getDiscount(Showing showing) {
-    	double largestDiscount = 0;
-        if (MOVIE_CODE_SPECIAL == specialCode) {
-            largestDiscount = ticketPrice * 0.2;  // 20% discount for special movie
-        }
-        
-        int showSequence = showing.getSequenceOfTheDay();
-        if (showSequence == 1) {
-        	if(3 > largestDiscount) {
-        		largestDiscount = 3; // 3 dollar discount for first showing of the day
-        	}
-        } else if (showSequence == 2) {
-        	if(2 > largestDiscount) {
-        		largestDiscount = 2; // 2 dollar discount for second showing of the day
-        	}
-        }
-
-        LocalTime timeDiscountStart = LocalTime.of(11, 0);
-        LocalTime timeDiscountEnd = LocalTime.of(16, 0);
-        LocalTime showingTime = showing.getStartTime().toLocalTime();
-        if(showingTime.isAfter(timeDiscountStart) && showingTime.isBefore(timeDiscountEnd)) {
-        	if(ticketPrice * 0.25 > largestDiscount) {
-        		largestDiscount = ticketPrice * 0.25;
-        	}
-        }
-        
-        if(showing.getStartTime().getDayOfMonth() == 7) {
-        	if(1 > largestDiscount) {
-        		largestDiscount = 1;
-        	}
-        }
-        
-        return largestDiscount;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -142,7 +151,10 @@ public class Movie {
                 && Objects.equals(runningTime, movie.runningTime)
                 && Objects.equals(specialCode, movie.specialCode);
     }
-
+    
+    /**
+     * Hashes the movie object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(title, description, runningTime, ticketPrice, specialCode);

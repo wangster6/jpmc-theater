@@ -64,7 +64,6 @@ public class MovieTests {
     	// discount of 20 percent off.
     	movie = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90),12.5, 1);
     	
-    	// Check that the 20 percent off special discount is applied.
         assertEquals(10, movie.calculateTicketPrice(showing));
     }
     
@@ -75,14 +74,10 @@ public class MovieTests {
     public void testCalculateTicketPriceSequenceDiscount() {
     	// Create new showing with same values as setUp except sequence of the day is 1. This should trigger a 3 dollar discount.
 		showing = new Showing(movie, 1, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(5, 0)));
-    	
-    	// Check that the 3 dollar off sequence discount is applied.
         assertEquals(9.5, movie.calculateTicketPrice(showing));
         
         // Change the showing sequence of the day to 2. This should trigger a 2 dollar discount.
 		showing = new Showing(movie, 2, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(5, 0)));
-    	
-    	// Check that the 2 dollar off sequence discount is applied.
         assertEquals(10.5, movie.calculateTicketPrice(showing));
     }
     
@@ -93,8 +88,6 @@ public class MovieTests {
     public void testCalculateTicketPriceTimeDiscount() {
     	// Create new showing with same values as setUp except time is between 11 AM and 4 PM . This should trigger a 25 percent discount.
 		showing = new Showing(movie, 5, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(13, 0)));
-    	
-    	// Check that the 25 percent off time discount is applied.
         assertEquals(9.375, movie.calculateTicketPrice(showing));
     }
     
@@ -105,8 +98,6 @@ public class MovieTests {
     public void testCalculateTicketPriceDayDiscount() {
     	// Create new showing with same values as setUp except the showing day is the 7th. This should trigger a 1 dollar discount.
 		showing = new Showing(movie, 5, LocalDateTime.of(LocalDate.of(2023, 4, 7), LocalTime.of(5, 0)));
-    	
-    	// Check that the 1 dollar day discount is applied.
         assertEquals(11.5, movie.calculateTicketPrice(showing));
     }
     

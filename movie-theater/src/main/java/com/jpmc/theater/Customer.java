@@ -25,6 +25,9 @@ public class Customer {
 
         }
 
+    /**
+     * Checks if customer objects are equal or not.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,12 +35,18 @@ public class Customer {
         Customer customer = (Customer) o;
         return Objects.equals(name, customer.name) && Objects.equals(id, customer.id);
     }
-
+    
+    /**
+     * Hashes the customer object
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, id);
     }
 
+    /**
+     * Formats the name of the customer into a string.
+     */
     @Override
     public String toString() {
         return "name: " + name;

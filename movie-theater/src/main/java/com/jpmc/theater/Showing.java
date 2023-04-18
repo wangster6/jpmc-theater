@@ -2,23 +2,38 @@ package com.jpmc.theater;
 
 import java.time.LocalDateTime;
 
+/**
+ * This class represents the movie showing object. Each movie showing has a movie, sequence of the day, and show start time field.
+ * This class also formats the start time of the show into a more easily readable String format as well as comparing sequences of
+ * showings.
+ * 
+ * @author Ray Wang
+ */
 public class Showing {
     private Movie movie;
     private int sequenceOfTheDay;
     private LocalDateTime showStartTime;
-
+    
+    /**
+     * Constructs the movie showing with the given movie, sequence of the day, and start time.
+     * @param movie
+     * @param sequenceOfTheDay
+     * @param showStartTime
+     */
     public Showing(Movie movie, int sequenceOfTheDay, LocalDateTime showStartTime) {
         this.movie = movie;
         this.sequenceOfTheDay = sequenceOfTheDay;
         this.showStartTime = showStartTime;
     }
-
+    
+    /**
+     * @return the movie in the showing
+     */
     public Movie getMovie() {
         return movie;
     }
     
     /**
-     * Returns the start time of the movie showing
      * @return the start time of the movie showing
      */
     public LocalDateTime getStartTime() {
@@ -26,6 +41,14 @@ public class Showing {
     }
     
     /**
+	 * Returns the sequence of the showing
+	 * @return the sequence of the day of the showing
+	 */
+	public int getSequenceOfTheDay() {
+	    return sequenceOfTheDay;
+	}
+
+	/**
      * Formats the start time of the movie showing into HH:MM form and returns it as a String
      * @param startTime the start time of the movie showing to format
      * @return the start time of the movie showing in HH:MM form
@@ -50,13 +73,14 @@ public class Showing {
     	}
         return rtn;
     }
-
+    
+    /** 
+     * Checks if the sequence of the current showing is equal to the parameter
+     * @param sequence
+     * @return true if sequences are the same, false if not
+     */
     public boolean isSequence(int sequence) {
         return this.sequenceOfTheDay == sequence;
-    }
-
-    public int getSequenceOfTheDay() {
-        return sequenceOfTheDay;
     }
 
 

@@ -29,7 +29,6 @@ public class ReservationTests {
 		movie = new Movie("Spider-Man: No Way Home", Duration.ofMinutes(90),12.5, 0);
 		showing = new Showing(movie, 5, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(5, 0)));
 		customer = new Customer("John Doe", "johndoe123");
-		
 		reservation = new Reservation(customer, showing, 4);
 	}
 	
@@ -39,7 +38,7 @@ public class ReservationTests {
     @Test
     void testTotalFee() {
     	assertDoesNotThrow(() -> reservation.totalFee());
-        assertEquals(50, reservation.totalFee());
+        assertEquals(50, reservation.totalFee()); // Showing and movie should not have any discount. Results is 12.5 price times 4 tickets.
     }
     
     /**
