@@ -3,7 +3,9 @@ package com.jpmc.theater;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
@@ -28,6 +30,9 @@ public class TheaterTests {
 	final Showing showing7 = new Showing(turningRed, 7, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(19, 30)));
 	final Showing showing8 = new Showing(spiderMan, 8, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(21, 10)));
 	
+	/**
+	 * Set up the theater schedule before each test case.
+	 */
 	@BeforeEach
 	public void setUp() {
         john = new Customer("John Doe", "johndoe123");
@@ -45,7 +50,7 @@ public class TheaterTests {
 	}
 	
 	/**
-	 * Testing the reserve method in Theater
+	 * Testing the reserve method in Theater.
 	 */
 	@Test
 	public void testReserve() {
@@ -58,11 +63,40 @@ public class TheaterTests {
 		assertEquals("Invalid sequence. There are no showings with the sequence: " + String.valueOf(20), e.getMessage());
 	}
 
-    @Test
+    /**
+	 * Testing the reservation management methods in Theater.
+	 */
+	@Test
+	public void testRemoveReservation() {
+		Reservation temp = theater.reserve(john, 1, 4);
+		Reservation removed = theater.removeReservation(john, 1, 4);
+		assertEquals(temp, removed);
+	}
+
+	/**
+	 * Testing the schedule management methods in Theater.
+	 */
+	@Test
+	public void testScheduleManagement() {
+		assertDoesNotThrow(() -> theater.clearSchedule());
+		assertDoesNotThrow(() -> theater.addShowingToSchedule(showing1));
+		assertDoesNotThrow(() -> theater.addShowingToSchedule(spiderMan, 2, LocalDateTime.of(LocalDate.of(2023, 4, 17), LocalTime.of(12, 50))));
+		assertDoesNotThrow(() -> theater.removeShowingFromSchedule(1));
+		assertNull(theater.removeShowingFromSchedule(4));
+		
+	}
+	
+	/**
+	 * Print the movie schedule in text format.
+	 */
+	@Test
     void printMovieScheduleText() {
         theater.printScheduleText();
     }
     
+	/**
+	 * Print the movie schedule in json format.
+	 */
     @Test
     void printMovieScheduleJson() {
         theater.printScheduleJson();

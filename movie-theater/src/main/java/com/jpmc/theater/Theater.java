@@ -34,8 +34,23 @@ public class Theater {
     	schedule.add(showing);
     	return showing;
     }
+    
+    public Showing removeShowingFromSchedule(int sequence) {
+    	Showing removed = null;
+    	for(Showing s : schedule) {
+    		if(s.getSequenceOfTheDay() == sequence) {
+    			removed = s;
+    			schedule.remove(s);
+    		}
+    	}
+    	return removed;
+    }
+    
+    public void clearSchedule() {
+    	this.schedule = new ArrayList<Showing>();
+    }
 
-    public Reservation reserve(Customer customer, int sequence, int howManyTickets) {
+    public Reservation reserve(Customer customer, int sequence, int ticketCount) {
         Showing showing = null;
 
     	for(int i = 0; i < schedule.size(); i++) {
@@ -48,9 +63,21 @@ public class Theater {
     		throw new IllegalArgumentException("Invalid sequence. There are no showings with the sequence: " + String.valueOf(sequence));
     	}
     	
-        Reservation toAdd = new Reservation(customer, showing, howManyTickets);
+        Reservation toAdd = new Reservation(customer, showing, ticketCount);
         reservations.add(toAdd);
         return toAdd;
+    }
+    
+    public Reservation removeReservation(Customer customer, int sequence, int ticketCount) {
+    	Reservation removed = null;
+    	for(int i = 0; i < reservations.size(); i++) {
+    		Reservation current = reservations.get(i);
+    		if(current.getCustomer().equals(customer) && current.getShowing().getSequenceOfTheDay() == sequence && current.getAudienceCount() == ticketCount) {
+    			removed = current;
+    			reservations.remove(reservations.get(i));
+    		}
+    	}
+    	return removed;
     }
     
     private int longestMovieTitle() {
