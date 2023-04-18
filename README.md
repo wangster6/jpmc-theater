@@ -1,4 +1,4 @@
-# JP Morgan Movie Theater
+# JPMC Movie Theater
 This program is a movie theater reservation system. It is designed to help theater owners and managers organize their movie showings and customer reservations in an efficient and organized way. The system allows theater managers to add or remove movie showings, print a schedule of all showings in text or json format, make and track customer reservations, and more.
 
 This project was a coding exercise for my job application and required me to utilize my knowledge and experience to greatly improve a poorly written application by identifying and resolving several deliberate design, code quality and test issues as well as implementing testing strategies and frameworks to refine the code base.
