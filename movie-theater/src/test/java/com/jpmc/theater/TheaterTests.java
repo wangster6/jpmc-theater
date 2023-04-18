@@ -59,7 +59,12 @@ public class TheaterTests {
 	}
 
     @Test
-    void printMovieSchedule() {
-        theater.printSchedule();
+    void printMovieScheduleText() {
+        theater.printScheduleText();
+    }
+    
+    @Test
+    void printMovieScheduleJson() {
+        theater.printScheduleJson();
     }
 }

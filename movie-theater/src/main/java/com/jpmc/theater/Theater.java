@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 public class Theater {
     LocalDateProvider provider;
@@ -49,13 +52,50 @@ public class Theater {
         reservations.add(toAdd);
         return toAdd;
     }
-
-    public void printSchedule() {
+    
+    private int longestMovieTitle() {
+    	int longest = 0;
+        for (Showing s : schedule) {
+            int titleLength = s.getMovie().getTitle().length();
+            if (titleLength > longest) {
+            	longest = titleLength;
+            }
+        }
+    	return longest;
+    }
+    
+    public void printScheduleText() {
+        System.out.println("Showtimes for " + provider.currentDate());
+        System.out.println("==========================================================================");
+        System.out.printf("%-10s %-12s %-"+(longestMovieTitle() + 3)+"s %-14s %-10s\n", "Sequence", "Start Time", "Movie Title", "Runtime", "Price");
+        schedule.forEach(s ->
+        		System.out.printf("%-10d %-12s %-"+(longestMovieTitle() + 3)+"s %-14s $%.2f\n",
+        				s.getSequenceOfTheDay(),
+        				s.formatStartTime(s.getStartTime()),
+        				s.getMovie().getTitle(),
+        				humanReadableFormat(s.getMovie().getRunningTime()),
+        				s.getMovie().getTicketPrice())
+        );
+        System.out.println("==========================================================================");
+    }
+    
+    public void printScheduleJson() {
         System.out.println("Showtimes for " + provider.currentDate());
         System.out.println("===================================================");
-        schedule.forEach(s ->
-                System.out.println(s.getSequenceOfTheDay() + ": " + s.formatStartTime(s.getStartTime()) + " " + s.getMovie().getTitle() + " " + humanReadableFormat(s.getMovie().getRunningTime()) + " $" + s.getMovie().getTicketPrice())
-        );
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        schedule.forEach(s -> {
+        		JsonObject scheduleObject = new JsonObject();
+                scheduleObject.addProperty("sequence", s.getSequenceOfTheDay());
+                scheduleObject.addProperty("startTime", s.formatStartTime(s.getStartTime()));
+                scheduleObject.addProperty("title", s.getMovie().getTitle());
+                scheduleObject.addProperty("runningTime", humanReadableFormat(s.getMovie().getRunningTime()));
+                scheduleObject.addProperty("ticketPrice", s.getMovie().getTicketPrice());
+                String json = gson.toJson(scheduleObject);
+                System.out.println(json);
+        });
+        
         System.out.println("===================================================");
     }
 
@@ -63,7 +103,7 @@ public class Theater {
         long hour = duration.toHours();
         long remainingMin = duration.toMinutes() - TimeUnit.HOURS.toMinutes(duration.toHours());
 
-        return String.format("(%s hour%s %s minute%s)", hour, handlePlural(hour), remainingMin, handlePlural(remainingMin));
+        return String.format("%s hr%s %s min%s", hour, handlePlural(hour), remainingMin, handlePlural(remainingMin));
     }
 
     // (s) postfix should be added to handle plural correctly
